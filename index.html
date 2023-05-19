@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>WordsAPI Example</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <input type="text" id="wordInput" placeholder="Enter a word">
-  <button onclick="getWordType()">Get Word Type</button>
+  <h1>WordsAPI Example</h1>
+  
+  <div>
+    <label for="wordInput">Enter a word:</label>
+    <input type="text" id="wordInput">
+    <button onclick="fetchWordDetails()">Get Type</button>
+  </div>
+  
   <div id="output"></div>
 
   <script>
-    function getWordType() {
-      const word = $('#wordInput').val();
-
+    function fetchWordDetails() {
+      const word = document.getElementById('wordInput').value;
       const settings = {
         async: true,
         crossDomain: true,
-        url: 'https://wordsapiv1.p.rapidapi.com/words/' + word + '/typeOf',
+        url: `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`,
         method: 'GET',
         headers: {
           'X-RapidAPI-Key': '4e5275299cmsh21ac9d00775c95dp1b9b10jsnb9a2a8d4a483',
@@ -23,9 +29,28 @@
         }
       };
 
-      $.ajax(settings).done(function (response) {
-        $('#output').text(JSON.stringify(response));
-      });
+      $.ajax(settings)
+        .done(function (response) {
+          displayResult(response);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+          displayError(errorThrown);
+        });
+    }
+
+    function displayResult(response) {
+      const outputDiv = document.getElementById('output');
+      if (response.typeOf && response.typeOf.length > 0) {
+        const typeList = response.typeOf.map((type) => `<li>${type}</li>`).join('');
+        outputDiv.innerHTML = `<h3>Type of ${response.word}</h3><ul>${typeList}</ul>`;
+      } else {
+        outputDiv.innerHTML = `<p>No type found for the word.</p>`;
+      }
+    }
+
+    function displayError(error) {
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = `<p>An error occurred: ${error}</p>`;
     }
   </script>
 </body>
