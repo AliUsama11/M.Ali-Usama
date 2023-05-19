@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+  <input type="text" id="wordInput" placeholder="Enter a word">
+  <button onclick="getWordType()">Get Word Type</button>
+  <div id="output"></div>
 
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
+  <script>
+    function getWordType() {
+      const word = $('#wordInput').val();
 
+      const settings = {
+        async: true,
+        crossDomain: true,
+        url: 'https://wordsapiv1.p.rapidapi.com/words/' + word + '/typeOf',
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': '4e5275299cmsh21ac9d00775c95dp1b9b10jsnb9a2a8d4a483',
+          'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+        }
+      };
+
+      $.ajax(settings).done(function (response) {
+        $('#output').text(JSON.stringify(response));
+      });
+    }
+  </script>
 </body>
 </html>
